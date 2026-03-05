@@ -1,0 +1,75 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-table-provider
+      author: saurabh-gambhire
+      changes:
+        - createTable:
+            tableName: provider
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: uuid
+                  type: UUID
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: user_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: provider_type
+                  type: VARCHAR(20)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: npi
+                  type: BIGINT
+                  constraints:
+                    unique: true
+              - column:
+                  name: medical_license_number
+                  type: VARCHAR(100)
+              - column:
+                  name: license_expiry_date
+                  type: TIMESTAMP
+              - column:
+                  name: license_state
+                  type: VARCHAR(50)
+              - column:
+                  name: electronic_signature
+                  type: VARCHAR(500)
+              - column:
+                  name: created_by
+                  type: VARCHAR(255)
+              - column:
+                  name: modified_by
+                  type: VARCHAR(255)
+              - column:
+                  name: created
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+                  defaultValueComputed: CURRENT_TIMESTAMP
+              - column:
+                  name: modified
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+
+  - changeSet:
+      id: add-fk-provider-user
+      author: saurabh-gambhire
+      changes:
+        - addForeignKeyConstraint:
+            baseTableName: provider
+            baseColumnNames: user_id
+            constraintName: fk_provider_user
+            referencedTableName: users
+            referencedColumnNames: id
+            onDelete: CASCADE

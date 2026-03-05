@@ -1,0 +1,95 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-table-patient
+      author: saurabh-gambhire
+      changes:
+        - createTable:
+            tableName: patient
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: uuid
+                  type: UUID
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: user_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: gender
+                  type: VARCHAR(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: ssn
+                  type: VARCHAR(20)
+              - column:
+                  name: mrn
+                  type: VARCHAR(20)
+              - column:
+                  name: timezone
+                  type: VARCHAR(20)
+              - column:
+                  name: registration_date
+                  type: TIMESTAMP
+              - column:
+                  name: fax_number
+                  type: VARCHAR(50)
+              - column:
+                  name: mobile_number
+                  type: VARCHAR(50)
+              - column:
+                  name: home_phone
+                  type: VARCHAR(50)
+              - column:
+                  name: email_consent
+                  type: BOOLEAN
+                  defaultValueBoolean: false
+              - column:
+                  name: message_consent
+                  type: BOOLEAN
+                  defaultValueBoolean: false
+              - column:
+                  name: call_consent
+                  type: BOOLEAN
+                  defaultValueBoolean: false
+              - column:
+                  name: intake_status
+                  type: BOOLEAN
+                  defaultValueBoolean: false
+              - column:
+                  name: created_by
+                  type: VARCHAR(255)
+              - column:
+                  name: modified_by
+                  type: VARCHAR(255)
+              - column:
+                  name: created
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+                  defaultValueComputed: CURRENT_TIMESTAMP
+              - column:
+                  name: modified
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+
+  - changeSet:
+      id: add-fk-patient-user
+      author: saurabh-gambhire
+      changes:
+        - addForeignKeyConstraint:
+            baseTableName: patient
+            baseColumnNames: user_id
+            constraintName: fk_patient_user
+            referencedTableName: users
+            referencedColumnNames: id
+            onDelete: CASCADE

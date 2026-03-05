@@ -1,0 +1,10 @@
+databaseChangeLog:
+  - include:
+      file: db/changesets/00-create-tenant-schemas.yaml
+  - changeSet:
+      id: run-tenant-changelogs
+      author: saurabh-gambhire
+      runAlways: true
+      changes:
+        - customChange:
+            class: com.hope.master_service.liquibase.RunTenantChangelogChange

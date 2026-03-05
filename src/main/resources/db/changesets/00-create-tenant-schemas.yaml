@@ -1,0 +1,13 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-schema-new_beginning
+      author: Saurabh-Gambhire
+      changes:
+        - sql:
+            sql: CREATE SCHEMA IF NOT EXISTS new_beginning
+  - changeSet:
+      id: create-schema-hope_programme
+      author: Saurabh-Gambhire
+      changes:
+        - sql:
+            sql: CREATE SCHEMA IF NOT EXISTS hope_programme

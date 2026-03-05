@@ -1,0 +1,44 @@
+version: "3.8"
+
+services:
+  postgres:
+    container_name: master-db
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: master_user
+      POSTGRES_PASSWORD: master_pass
+      POSTGRES_DB: master_db
+      PGDATA: /var/lib/postgresql/data/pgdata
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/pgdata
+      - ./docker/init:/docker-entrypoint-initdb.d
+    ports:
+      - "5433:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U master_user -d master_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  keycloak:
+    container_name: master-keycloak
+    image: quay.io/keycloak/keycloak:25.0.0
+    command: start-dev
+    environment:
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://master-db:5432/keycloak
+      KC_DB_USERNAME: master_user
+      KC_DB_PASSWORD: master_pass
+      KC_DB_URL_DATABASE: keycloak
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+      KC_PROXY: edge
+      KC_HTTP_ENABLED: "true"
+    ports:
+      - "8090:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  postgres_data:

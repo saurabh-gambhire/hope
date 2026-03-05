@@ -1,0 +1,11 @@
+databaseChangeLog:
+  - include:
+      file: db/tenant/changesets/User.yaml
+  - include:
+      file: db/tenant/changesets/Provider.yaml
+  - include:
+      file: db/tenant/changesets/Patient.yaml
+  - include:
+      file: db/tenant/changesets/InvitationToken.yaml
+  - include:
+      file: db/tenant/changesets/PasswordResetOtp.yaml
