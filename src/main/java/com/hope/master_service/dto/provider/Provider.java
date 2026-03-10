@@ -1,10 +1,12 @@
 package com.hope.master_service.dto.provider;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.hope.master_service.dto.Address;
 import com.hope.master_service.dto.enums.Gender;
 import com.hope.master_service.dto.enums.ProviderType;
 import com.hope.master_service.dto.enums.RoleType;
 import com.hope.master_service.dto.enums.Roles;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -61,16 +63,8 @@ public class Provider {
 
     private String jobTitle;
 
-    // Address fields
-    private String addressLine1;
-
-    private String addressLine2;
-
-    private String city;
-
-    private String state;
-
-    private String zipCode;
+    @Valid
+    private Address address;
 
     // Provider fields
     @NotNull(message = "Provider type is required")

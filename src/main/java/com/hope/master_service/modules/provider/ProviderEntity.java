@@ -2,6 +2,7 @@ package com.hope.master_service.modules.provider;
 
 import com.hope.master_service.dto.enums.ProviderType;
 import com.hope.master_service.dto.provider.Provider;
+import com.hope.master_service.entity.AddressEntity;
 import com.hope.master_service.entity.AuditableEntity;
 import com.hope.master_service.modules.user.UserEntity;
 import jakarta.persistence.*;
@@ -70,11 +71,7 @@ public class ProviderEntity extends AuditableEntity {
                 .active(this.user.isActive())
                 .archive(this.user.isArchive())
                 .jobTitle(this.user.getJobTitle())
-                .addressLine1(this.user.getAddressLine1())
-                .addressLine2(this.user.getAddressLine2())
-                .city(this.user.getCity())
-                .state(this.user.getState())
-                .zipCode(this.user.getZipCode())
+                .address(AddressEntity.toDto(this.user.getAddress()))
                 .providerType(this.providerType)
                 .npi(this.npi)
                 .medicalLicenseNumber(this.medicalLicenseNumber)
@@ -92,7 +89,6 @@ public class ProviderEntity extends AuditableEntity {
                 .medicalLicenseNumber(provider.getMedicalLicenseNumber())
                 .licenseExpiryDate(provider.getLicenseExpiryDate())
                 .licenseState(provider.getLicenseState())
-                .electronicSignature(provider.getElectronicSignature())
                 .build();
     }
 }

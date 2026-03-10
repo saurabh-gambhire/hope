@@ -3,6 +3,7 @@ package com.hope.master_service.modules.patient;
 import com.hope.master_service.dto.enums.Gender;
 import com.hope.master_service.dto.enums.TimeZone;
 import com.hope.master_service.dto.patient.Patient;
+import com.hope.master_service.entity.AddressEntity;
 import com.hope.master_service.entity.AuditableEntity;
 import com.hope.master_service.modules.user.UserEntity;
 import jakarta.persistence.*;
@@ -61,6 +62,10 @@ public class PatientEntity extends AuditableEntity {
 
     private boolean intakeStatus;
 
+    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinColumn(name = "address_id", referencedColumnName = "id")
+    private AddressEntity address;
+
     private static final int MRN_LENGTH = 7;
 
     @PrePersist
@@ -85,6 +90,7 @@ public class PatientEntity extends AuditableEntity {
                 .birthDate(this.user.getBirthDate())
                 .active(this.user.isActive())
                 .archive(this.user.isArchive())
+                .address(AddressEntity.toDto(this.address))
                 .gender(this.gender)
                 .ssn(this.ssn)
                 .mrn(this.mrn)
@@ -113,6 +119,7 @@ public class PatientEntity extends AuditableEntity {
                 .emailConsent(patient.isEmailConsent())
                 .messageConsent(patient.isMessageConsent())
                 .callConsent(patient.isCallConsent())
+                .address(AddressEntity.toEntity(patient.getAddress()))
                 .build();
     }
 }

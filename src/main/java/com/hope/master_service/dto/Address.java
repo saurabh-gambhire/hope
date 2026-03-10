@@ -1,6 +1,8 @@
-package com.hope.master_service.dto.user;
+package com.hope.master_service.dto;
 
+import com.hope.master_service.dto.enums.USState;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -8,11 +10,15 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.UUID;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 public class Address {
+
+    private UUID uuid;
 
     @NotBlank(message = "Line1 is mandatory field")
     @Size(max = 255, message = "Line1 should not exceed {max} characters")
@@ -26,9 +32,8 @@ public class Address {
     @Size(max = 255, message = "city should not exceed {max} characters")
     private String city;
 
-    @NotBlank(message = "State is mandatory field")
-    @Size(max = 5, message = "State should not exceed {max} characters")
-    private String state;
+    @NotNull(message = "State is mandatory field")
+    private USState state;
 
     @NotBlank(message = "Country is mandatory field")
     @Pattern(regexp = "^[a-zA-Z]+(?:[\\s-][a-zA-Z]+)*$", message = "Invalid country format")
@@ -37,6 +42,5 @@ public class Address {
 
     @NotBlank(message = "Zipcode is a mandatory field")
     @Size(min = 5, max = 10, message = "Zipcode should be between 5 and 10 characters")
-    //@Pattern(regexp = "^[\\w\\s]{5,10}$", message = "Invalid zipcode format")
     private String zipcode;
 }

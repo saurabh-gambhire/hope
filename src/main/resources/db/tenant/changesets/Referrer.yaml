@@ -1,0 +1,150 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-table-referrer
+      author: saurabh-gambhire
+      changes:
+        - createTable:
+            tableName: referrer
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: uuid
+                  type: UUID
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: organization_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: first_name
+                  type: VARCHAR(100)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: middle_name
+                  type: VARCHAR(100)
+              - column:
+                  name: last_name
+                  type: VARCHAR(100)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: title
+                  type: VARCHAR(50)
+              - column:
+                  name: gender
+                  type: VARCHAR(20)
+              - column:
+                  name: active
+                  type: BOOLEAN
+                  defaultValueBoolean: true
+                  constraints:
+                    nullable: false
+              - column:
+                  name: archive
+                  type: BOOLEAN
+                  defaultValueBoolean: false
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_by
+                  type: VARCHAR(255)
+              - column:
+                  name: modified_by
+                  type: VARCHAR(255)
+              - column:
+                  name: created
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+                  defaultValueComputed: CURRENT_TIMESTAMP
+              - column:
+                  name: modified
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+        - addForeignKeyConstraint:
+            baseTableName: referrer
+            baseColumnNames: organization_id
+            referencedTableName: organization
+            referencedColumnNames: id
+            constraintName: fk_referrer_organization
+
+  - changeSet:
+      id: create-table-referrer-contact
+      author: saurabh-gambhire
+      changes:
+        - createTable:
+            tableName: referrer_contact
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: uuid
+                  type: UUID
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: referrer_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: email
+                  type: VARCHAR(255)
+              - column:
+                  name: primary_phone
+                  type: VARCHAR(50)
+              - column:
+                  name: extension
+                  type: VARCHAR(20)
+              - column:
+                  name: phone_type
+                  type: VARCHAR(20)
+              - column:
+                  name: not_ok_to_leave_message
+                  type: BOOLEAN
+                  defaultValueBoolean: false
+              - column:
+                  name: address_id
+                  type: BIGINT
+              - column:
+                  name: created_by
+                  type: VARCHAR(255)
+              - column:
+                  name: modified_by
+                  type: VARCHAR(255)
+              - column:
+                  name: created
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+                  defaultValueComputed: CURRENT_TIMESTAMP
+              - column:
+                  name: modified
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+        - addForeignKeyConstraint:
+            baseTableName: referrer_contact
+            baseColumnNames: referrer_id
+            referencedTableName: referrer
+            referencedColumnNames: id
+            constraintName: fk_referrer_contact_referrer
+        - addForeignKeyConstraint:
+            baseTableName: referrer_contact
+            baseColumnNames: address_id
+            referencedTableName: address
+            referencedColumnNames: id
+            constraintName: fk_referrer_contact_address

@@ -4,6 +4,7 @@ import com.hope.master_service.dto.enums.Roles;
 import com.hope.master_service.dto.patient.Patient;
 import com.hope.master_service.dto.response.ResponseCode;
 import com.hope.master_service.dto.user.User;
+import com.hope.master_service.entity.AddressEntity;
 import com.hope.master_service.exception.HopeException;
 import com.hope.master_service.modules.user.UserEntity;
 import com.hope.master_service.modules.user.UserService;
@@ -71,6 +72,7 @@ public class PatientService extends AppService {
         userEntity.setPhone(patient.getPhone());
         userEntity.setBirthDate(patient.getBirthDate());
 
+        entity.setAddress(AddressEntity.updateEntity(entity.getAddress(), patient.getAddress()));
         entity.setGender(patient.getGender());
         entity.setSsn(patient.getSsn());
         entity.setTimezone(patient.getTimezone());

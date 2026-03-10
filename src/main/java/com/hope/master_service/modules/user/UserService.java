@@ -2,10 +2,13 @@ package com.hope.master_service.modules.user;
 
 import com.hope.master_service.dto.enums.RoleType;
 import com.hope.master_service.dto.enums.Roles;
+import com.hope.master_service.dto.enums.UserStatus;
 import com.hope.master_service.dto.response.ResponseCode;
 import com.hope.master_service.dto.user.LoginRequest;
 import com.hope.master_service.dto.user.LoginResponse;
 import com.hope.master_service.dto.user.User;
+import com.hope.master_service.dto.user.UserStatusSummary;
+import com.hope.master_service.entity.AddressEntity;
 import com.hope.master_service.exception.HopeException;
 import com.hope.master_service.service.AppService;
 import com.hope.master_service.service.EmailService;
@@ -21,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.security.SecureRandom;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -65,6 +69,31 @@ public class UserService extends AppService {
                 .map(UserEntity::toDto);
     }
 
+    public Page<User> search(String search, UserStatus status, List<Roles> roles,
+                             Instant lastLoginFrom, Instant lastLoginTo,
+                             Boolean neverLoggedIn, Pageable pageable) {
+        return userRepository.findAll(
+                UserSpecification.withFilters(search, status, roles, lastLoginFrom, lastLoginTo, neverLoggedIn),
+                pageable
+        ).map(UserEntity::toDto);
+    }
+
+    public UserStatusSummary getStatusCounts() {
+        long total = userRepository.count();
+        long active = userRepository.count(UserSpecification.isActive());
+        long inactive = userRepository.count(UserSpecification.isInactive());
+        long pending = userRepository.count(UserSpecification.isPending());
+        long suspended = userRepository.count(UserSpecification.isSuspended());
+
+        return UserStatusSummary.builder()
+                .total(total)
+                .active(active)
+                .inactive(inactive)
+                .pending(pending)
+                .suspended(suspended)
+                .build();
+    }
+
     public User getByUuid(UUID uuid) throws HopeException {
         UserEntity entity = userRepository.findByUuid(uuid)
                 .orElseThrow(() -> throwException(ResponseCode.USER_NOT_FOUND));
@@ -105,11 +134,7 @@ public class UserService extends AppService {
         entity.setGender(user.getGender());
         entity.setJobTitle(user.getJobTitle());
         entity.setBirthDate(user.getBirthDate());
-        entity.setAddressLine1(user.getAddressLine1());
-        entity.setAddressLine2(user.getAddressLine2());
-        entity.setCity(user.getCity());
-        entity.setState(user.getState());
-        entity.setZipCode(user.getZipCode());
+        entity.setAddress(AddressEntity.updateEntity(entity.getAddress(), user.getAddress()));
 
         if (user.getRole() != null && !user.getRole().equals(entity.getRole())) {
             iamService.updateUserRole(entity.getIamId(), existingRole, user.getRole());
@@ -221,7 +246,7 @@ public class UserService extends AppService {
     }
 
     @Transactional
-    public void forgotPassword(String email) throws HopeException {
+    public String forgotPassword(String email) throws HopeException {
         UserEntity entity = userRepository.findByEmail(email)
                 .orElseThrow(() -> throwException(ResponseCode.USER_EMAIL_NOT_FOUND));
 
@@ -246,7 +271,8 @@ public class UserService extends AppService {
         otpRepository.save(otpEntity);
 
         emailService.sendOtpEmail(entity.getEmail(), entity.getFirstName(), otp);
-        log.info("OTP sent to {}", entity.getEmail());
+        log.info("OTP sent to {} with OTP : {}", entity.getEmail(), otp);
+        return  otp;
     }
 
     @Transactional

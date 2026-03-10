@@ -1,0 +1,228 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-table-homework
+      author: saurabh-gambhire
+      changes:
+        - createTable:
+            tableName: homework
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: uuid
+                  type: UUID
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: name
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: content
+                  type: TEXT
+              - column:
+                  name: sub_organization_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: contract_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: document_file_name
+                  type: VARCHAR(255)
+              - column:
+                  name: document_file_size
+                  type: BIGINT
+              - column:
+                  name: document_s3_key
+                  type: VARCHAR(500)
+              - column:
+                  name: current_version
+                  type: INT
+                  defaultValueNumeric: 0
+              - column:
+                  name: active
+                  type: BOOLEAN
+                  defaultValueBoolean: true
+                  constraints:
+                    nullable: false
+              - column:
+                  name: archive
+                  type: BOOLEAN
+                  defaultValueBoolean: false
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_by
+                  type: VARCHAR(255)
+              - column:
+                  name: modified_by
+                  type: VARCHAR(255)
+              - column:
+                  name: created
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+                  defaultValueComputed: CURRENT_TIMESTAMP
+              - column:
+                  name: modified
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+        - addForeignKeyConstraint:
+            baseTableName: homework
+            baseColumnNames: sub_organization_id
+            referencedTableName: sub_organization
+            referencedColumnNames: id
+            constraintName: fk_homework_sub_organization
+        - addForeignKeyConstraint:
+            baseTableName: homework
+            baseColumnNames: contract_id
+            referencedTableName: contract
+            referencedColumnNames: id
+            constraintName: fk_homework_contract
+
+  - changeSet:
+      id: create-table-homework-document-version
+      author: saurabh-gambhire
+      changes:
+        - createTable:
+            tableName: homework_document_version
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: uuid
+                  type: UUID
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: homework_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: version
+                  type: INT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: file_name
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: file_size
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: s3_key
+                  type: VARCHAR(500)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: uploaded_by
+                  type: VARCHAR(255)
+              - column:
+                  name: uploaded_at
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+                  defaultValueComputed: CURRENT_TIMESTAMP
+        - addForeignKeyConstraint:
+            baseTableName: homework_document_version
+            baseColumnNames: homework_id
+            referencedTableName: homework
+            referencedColumnNames: id
+            constraintName: fk_homework_doc_version_homework
+
+  - changeSet:
+      id: create-table-homework-curriculum
+      author: saurabh-gambhire
+      changes:
+        - createTable:
+            tableName: homework_curriculum
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: uuid
+                  type: UUID
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: sub_organization_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: contract_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: homework_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: sequence_order
+                  type: INT
+                  defaultValueNumeric: 0
+              - column:
+                  name: created_by
+                  type: VARCHAR(255)
+              - column:
+                  name: modified_by
+                  type: VARCHAR(255)
+              - column:
+                  name: created
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+                  defaultValueComputed: CURRENT_TIMESTAMP
+              - column:
+                  name: modified
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+        - addForeignKeyConstraint:
+            baseTableName: homework_curriculum
+            baseColumnNames: sub_organization_id
+            referencedTableName: sub_organization
+            referencedColumnNames: id
+            constraintName: fk_homework_curriculum_sub_org
+        - addForeignKeyConstraint:
+            baseTableName: homework_curriculum
+            baseColumnNames: contract_id
+            referencedTableName: contract
+            referencedColumnNames: id
+            constraintName: fk_homework_curriculum_contract
+        - addForeignKeyConstraint:
+            baseTableName: homework_curriculum
+            baseColumnNames: homework_id
+            referencedTableName: homework
+            referencedColumnNames: id
+            constraintName: fk_homework_curriculum_homework
+        - addUniqueConstraint:
+            tableName: homework_curriculum
+            columnNames: sub_organization_id, contract_id, homework_id
+            constraintName: uk_curriculum_sub_org_contract_homework

@@ -1,0 +1,54 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-table-address
+      author: saurabh-gambhire
+      changes:
+        - createTable:
+            tableName: address
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: uuid
+                  type: UUID
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: line1
+                  type: VARCHAR(255)
+              - column:
+                  name: line2
+                  type: VARCHAR(255)
+              - column:
+                  name: city
+                  type: VARCHAR(255)
+              - column:
+                  name: state_code
+                  type: VARCHAR(5)
+              - column:
+                  name: country
+                  type: VARCHAR(255)
+              - column:
+                  name: zipcode
+                  type: VARCHAR(20)
+              - column:
+                  name: created_by
+                  type: VARCHAR(255)
+              - column:
+                  name: modified_by
+                  type: VARCHAR(255)
+              - column:
+                  name: created
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+                  defaultValueComputed: CURRENT_TIMESTAMP
+              - column:
+                  name: modified
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP

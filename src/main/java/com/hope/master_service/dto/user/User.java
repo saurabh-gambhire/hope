@@ -1,11 +1,13 @@
 package com.hope.master_service.dto.user;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.hope.master_service.dto.Address;
 import com.hope.master_service.dto.enums.Gender;
 import com.hope.master_service.dto.enums.RoleType;
 import com.hope.master_service.dto.enums.Roles;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -76,16 +78,8 @@ public class User {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private boolean phoneVerified;
 
-    // Address fields
-    private String addressLine1;
-
-    private String addressLine2;
-
-    private String city;
-
-    private String state;
-
-    private String zipCode;
+    @Valid
+    private Address address;
 
     private Map<UUID, String> workLocations;
 

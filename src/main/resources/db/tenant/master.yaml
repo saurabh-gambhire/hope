@@ -1,10 +1,22 @@
 databaseChangeLog:
   - include:
+      file: db/tenant/changesets/Address.yaml
+  - include:
+      file: db/tenant/changesets/Organization.yaml
+  - include:
       file: db/tenant/changesets/User.yaml
   - include:
       file: db/tenant/changesets/Provider.yaml
   - include:
       file: db/tenant/changesets/Patient.yaml
+  - include:
+      file: db/tenant/changesets/SubOrganization.yaml
+  - include:
+      file: db/tenant/changesets/Referrer.yaml
+  - include:
+      file: db/tenant/changesets/Contract.yaml
+  - include:
+      file: db/tenant/changesets/Homework.yaml
   - include:
       file: db/tenant/changesets/InvitationToken.yaml
   - include:
