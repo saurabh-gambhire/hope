@@ -1,8 +1,10 @@
 package com.hope.master_service.dto.patient;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.hope.master_service.dto.Address;
 import com.hope.master_service.dto.enums.Gender;
 import com.hope.master_service.dto.enums.TimeZone;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -50,6 +52,9 @@ public class Patient {
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private boolean archive;
+
+    @Valid
+    private Address address;
 
     // Patient fields
     @NotNull(message = "Gender is mandatory")

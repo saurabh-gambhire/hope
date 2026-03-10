@@ -1,10 +1,14 @@
 package com.hope.master_service.modules.user;
 
 import com.hope.master_service.controller.AppController;
+import com.hope.master_service.dto.enums.Roles;
+import com.hope.master_service.dto.enums.USState;
+import com.hope.master_service.dto.enums.UserStatus;
 import com.hope.master_service.dto.response.Response;
 import com.hope.master_service.dto.response.ResponseCode;
 import com.hope.master_service.dto.user.*;
 import com.hope.master_service.exception.HopeException;
+import com.hope.master_service.service.MessageService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -13,7 +17,12 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.Instant;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/master/users")
@@ -33,10 +42,22 @@ public class UserController extends AppController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "created") String sortBy,
-            @RequestParam(defaultValue = "desc") String sortDirection) {
-        Page<User> users = userService.getAll(
+            @RequestParam(defaultValue = "desc") String sortDirection,
+            @RequestParam(required = false) String search,
+            @RequestParam(required = false, defaultValue = "ACTIVE") UserStatus status,
+            @RequestParam(required = false) List<Roles> roles,
+            @RequestParam(required = false) Instant lastLoginFrom,
+            @RequestParam(required = false) Instant lastLoginTo,
+            @RequestParam(required = false) Boolean neverLoggedIn) {
+        Page<User> users = userService.search(
+                search, status, roles, lastLoginFrom, lastLoginTo, neverLoggedIn,
                 PageRequest.of(page, size, Sort.Direction.fromString(sortDirection), sortBy));
         return data(users);
+    }
+
+    @GetMapping("/status-counts")
+    public ResponseEntity<Response> getStatusCounts() {
+        return data(userService.getStatusCounts());
     }
 
     @GetMapping("/{uuid}")
@@ -91,8 +112,8 @@ public class UserController extends AppController {
 
     @PostMapping("/forgot-password")
     public ResponseEntity<Response> forgotPassword(@Valid @RequestBody ForgotPasswordRequest request) throws HopeException {
-        userService.forgotPassword(request.getEmail());
-        return success(ResponseCode.OTP_SENT);
+        String otp = userService.forgotPassword(request.getEmail());
+        return data(ResponseCode.OTP_SENT, messageService.getMessage(ResponseCode.OTP_SENT), otp);
     }
 
     @PostMapping("/verify-otp")
@@ -114,4 +135,13 @@ public class UserController extends AppController {
         userService.logout(request.getRefreshToken());
         return success(ResponseCode.LOGOUT_RESPONSE);
     }
+
+    @GetMapping("/us-states")
+    public ResponseEntity<Response> getUSStates() {
+        List<Map<String, String>> states = Arrays.stream(USState.values())
+                .map(s -> Map.of("state", s.getStateName(), "stateCode", s.name()))
+                .collect(Collectors.toList());
+        return data(states);
+    }
+
 }

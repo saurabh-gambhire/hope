@@ -1,6 +1,9 @@
 package com.hope.master_service.modules.provider;
 
 import com.hope.master_service.controller.AppController;
+import com.hope.master_service.dto.enums.ProviderType;
+import com.hope.master_service.dto.enums.Roles;
+import com.hope.master_service.dto.enums.UserStatus;
 import com.hope.master_service.dto.provider.Provider;
 import com.hope.master_service.dto.response.Response;
 import com.hope.master_service.dto.response.ResponseCode;
@@ -13,6 +16,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.Instant;
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -27,10 +32,23 @@ public class ProviderController extends AppController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "created") String sortBy,
-            @RequestParam(defaultValue = "desc") String sortDirection) {
-        Page<Provider> providers = providerService.getAll(
+            @RequestParam(defaultValue = "desc") String sortDirection,
+            @RequestParam(required = false) String search,
+            @RequestParam(required = false, defaultValue = "ACTIVE") UserStatus status,
+            @RequestParam(required = false) List<Roles> roles,
+            @RequestParam(required = false) ProviderType providerType,
+            @RequestParam(required = false) Instant lastLoginFrom,
+            @RequestParam(required = false) Instant lastLoginTo,
+            @RequestParam(required = false) Boolean neverLoggedIn) throws HopeException {
+        Page<Provider> providers = providerService.search(
+                search, status, roles, providerType, lastLoginFrom, lastLoginTo, neverLoggedIn,
                 PageRequest.of(page, size, Sort.Direction.fromString(sortDirection), sortBy));
         return data(providers);
+    }
+
+    @GetMapping("/status-counts")
+    public ResponseEntity<Response> getStatusCounts() {
+        return data(providerService.getStatusCounts());
     }
 
     @GetMapping("/{uuid}")

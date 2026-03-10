@@ -25,7 +25,8 @@ public class SecurityUtils {
 			"/api/master/users/verify-otp",
 			"/api/master/users/set-password",
 			"/api/master/users/activate",
-			"/api/master/users/logout"
+			"/api/master/users/logout",
+			"/api/master/us-states"
 	);
 
 	private static final AntPathMatcher pathMatcher = new AntPathMatcher();

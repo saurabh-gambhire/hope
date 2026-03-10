@@ -4,6 +4,7 @@ import com.hope.master_service.dto.enums.Gender;
 import com.hope.master_service.dto.enums.RoleType;
 import com.hope.master_service.dto.enums.Roles;
 import com.hope.master_service.dto.user.User;
+import com.hope.master_service.entity.AddressEntity;
 import com.hope.master_service.entity.AuditableEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -69,16 +70,9 @@ public class UserEntity extends AuditableEntity {
 
     private boolean phoneVerified;
 
-    // Address fields
-    private String addressLine1;
-
-    private String addressLine2;
-
-    private String city;
-
-    private String state;
-
-    private String zipCode;
+    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinColumn(name = "address_id", referencedColumnName = "id")
+    private AddressEntity address;
 
     @PrePersist
     public void prePersist() {
@@ -107,11 +101,7 @@ public class UserEntity extends AuditableEntity {
                 .archive(this.archive)
                 .emailVerified(this.emailVerified)
                 .phoneVerified(this.phoneVerified)
-                .addressLine1(this.addressLine1)
-                .addressLine2(this.addressLine2)
-                .city(this.city)
-                .state(this.state)
-                .zipCode(this.zipCode)
+                .address(AddressEntity.toDto(this.address))
                 .build();
     }
 
@@ -128,11 +118,7 @@ public class UserEntity extends AuditableEntity {
                 .roleType(user.getRoleType())
                 .role(user.getRole())
                 .birthDate(user.getBirthDate())
-                .addressLine1(user.getAddressLine1())
-                .addressLine2(user.getAddressLine2())
-                .city(user.getCity())
-                .state(user.getState())
-                .zipCode(user.getZipCode())
+                .address(AddressEntity.toEntity(user.getAddress()))
                 .build();
     }
 

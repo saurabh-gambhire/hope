@@ -86,20 +86,8 @@ databaseChangeLog:
                     nullable: false
                   defaultValueBoolean: false
               - column:
-                  name: address_line1
-                  type: VARCHAR(255)
-              - column:
-                  name: address_line2
-                  type: VARCHAR(255)
-              - column:
-                  name: city
-                  type: VARCHAR(100)
-              - column:
-                  name: state
-                  type: VARCHAR(100)
-              - column:
-                  name: zip_code
-                  type: VARCHAR(20)
+                  name: address_id
+                  type: BIGINT
               - column:
                   name: created_by
                   type: VARCHAR(255)
@@ -116,3 +104,15 @@ databaseChangeLog:
                   name: modified
                   type: TIMESTAMP
                   defaultValueComputed: CURRENT_TIMESTAMP
+
+  - changeSet:
+      id: add-address-id-to-users
+      author: saurabh-gambhire
+      changes:
+        - addForeignKeyConstraint:
+            baseTableName: users
+            baseColumnNames: address_id
+            constraintName: fk_users_address
+            referencedTableName: address
+            referencedColumnNames: id
+            onDelete: SET NULL

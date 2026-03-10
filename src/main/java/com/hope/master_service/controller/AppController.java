@@ -1,6 +1,7 @@
 package com.hope.master_service.controller;
 
 import com.hope.master_service.config.AppConfig;
+import com.hope.master_service.dto.enums.USState;
 import com.hope.master_service.dto.response.Response;
 import com.hope.master_service.dto.response.ResponseCode;
 import com.hope.master_service.service.MessageService;
@@ -8,9 +9,11 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.util.UUID;
+import java.util.*;
 
+@RestController
 public class AppController {
 
     @Autowired

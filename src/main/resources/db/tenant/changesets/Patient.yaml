@@ -66,6 +66,9 @@ databaseChangeLog:
                   type: BOOLEAN
                   defaultValueBoolean: false
               - column:
+                  name: address_id
+                  type: BIGINT
+              - column:
                   name: created_by
                   type: VARCHAR(255)
               - column:
@@ -93,3 +96,15 @@ databaseChangeLog:
             referencedTableName: users
             referencedColumnNames: id
             onDelete: CASCADE
+
+  - changeSet:
+      id: add-fk-patient-address
+      author: saurabh-gambhire
+      changes:
+        - addForeignKeyConstraint:
+            baseTableName: patient
+            baseColumnNames: address_id
+            constraintName: fk_patient_address
+            referencedTableName: address
+            referencedColumnNames: id
+            onDelete: SET NULL
